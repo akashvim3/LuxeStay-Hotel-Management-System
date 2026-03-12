@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Register - LuxeStay{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Create <span class="text-gold">Account</span></h1>
+        <div class="section-divider"></div>
+    </div>
+</div>
+<section class="section">
+    <div class="container container-sm" style="max-width:550px;">
+        <div class="form-card">
+            <div class="text-center mb-3">
+                <i class="fas fa-crown" style="font-size:3rem;color:var(--primary);margin-bottom:var(--space-md);"></i>
+                <h2>Join LuxeStay</h2>
+                <p style="color:var(--medium-gray);">Create your account and start earning loyalty points</p>
+            </div>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="grid-2" style="gap:var(--space-md);">
+                    {% for field in form %}
+                    <div class="form-group" {% if field.name == 'password1' or field.name == 'password2' %}style="grid-column:span 2;"{% endif %}>
+                        <label>{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}<small style="color:var(--danger);">{{ field.errors.0 }}</small>{% endif %}
+                        {% if field.help_text %}<small style="color:var(--medium-gray);display:block;margin-top:4px;">{{ field.help_text }}</small>{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                </div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary w-100 btn-lg mt-1 mb-2">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+            </form>
+            <p class="text-center" style="color:var(--medium-gray);">
+                Already have an account? <a href="{% url 'login' %}" style="color:var(--primary);font-weight:600;">Sign
+                    In</a>
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

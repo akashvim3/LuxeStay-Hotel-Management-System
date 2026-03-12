@@ -1,0 +1,303 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="LuxeStay - Premium Hotel & Restaurant. Experience luxury accommodation and fine dining at its finest. Book rooms and reserve tables online.">
+    <meta name="keywords"
+        content="luxury hotel, five star hotel Mumbai, fine dining restaurant, room booking, table reservation, LuxeStay">
+    <meta name="author" content="LuxeStay Groups">
+    <meta name="theme-color" content="#c9a84c">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="LuxeStay - Luxury Hotel & Restaurant">
+    <meta property="og:description" content="Experience the epitome of luxury hospitality and world-class dining.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&h=630&q=80">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+    <meta property="twitter:title" content="LuxeStay - Luxury Hotel & Restaurant">
+    <meta property="twitter:description" content="Experience the epitome of luxury hospitality and world-class dining.">
+    <meta property="twitter:image"
+        content="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&h=630&q=80">
+
+    <!-- PWA -->
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="LuxeStay">
+
+    <title>{% block title %}LuxeStay - Luxury Hotel & Restaurant{% endblock %}</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Hotel",
+      "name": "LuxeStay Hotel & Restaurant",
+      "description": "5-star luxury hotel and fine dining restaurant in Mumbai.",
+      "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "123 Luxury Avenue",
+        "addressLocality": "Mumbai",
+        "addressRegion": "MH",
+        "postalCode": "400001",
+        "addressCountry": "IN"
+      },
+      "telephone": "+919876543210",
+      "priceRange": "$$$$"
+    }
+    </script>
+
+    <style>
+        /* Force dark mode compatibility if class exists */
+        body.dark-mode {
+            --white: #1a1a1a;
+            --cream: #2d2d2d;
+            --black: #ffffff;
+            --dark-gray: #e0e0e0;
+            --medium-gray: #a0a0a0;
+            --light-gray: #3d3d3d;
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        body.dark-mode .navbar {
+            background: rgba(18, 18, 18, 0.9);
+        }
+
+        body.dark-mode .card,
+        body.dark-mode .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .section-cream {
+            background-color: #1a1a1a;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="{% url 'home' %}" class="navbar-brand">
+                <i class="fas fa-hotel logo-icon"></i>
+                <span class="logo-text">Luxe<span>Stay</span></span>
+            </a>
+
+            <div class="nav-links" id="navLinks">
+                <a href="{% url 'home' %}"
+                    class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
+                <a href="{% url 'room_list' %}"
+                    class="{% if 'room' in request.resolver_match.url_name %}active{% endif %}">Rooms</a>
+                <a href="{% url 'restaurant_menu' %}"
+                    class="{% if 'restaurant' in request.resolver_match.url_name %}active{% endif %}">Dining</a>
+                <a href="{% url 'gallery' %}"
+                    class="{% if request.resolver_match.url_name == 'gallery' %}active{% endif %}">Gallery</a>
+                <a href="{% url 'event_list' %}"
+                    class="{% if 'event' in request.resolver_match.url_name %}active{% endif %}">Events</a>
+                <a href="{% url 'blog_list' %}"
+                    class="{% if 'blog' in request.resolver_match.url_name %}active{% endif %}">Blog</a>
+            </div>
+
+            <div class="nav-actions">
+                <!-- Dark Mode Toggle -->
+                <button id="darkModeToggle" class="nav-icon-btn" title="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+
+                <!-- Currency Switcher -->
+                <div class="dropdown">
+                    <button class="nav-icon-btn" title="Change Currency">
+                        <i class="fas fa-coins"></i>
+                        <span class="currency-label">
+                            {% if user.is_authenticated %}{{ user.preferred_currency }}{% else %}{{
+                            request.session.currency|default:'INR' }}{% endif %}
+                        </span>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="{% url 'set_preference' %}?type=currency&value=INR">INR (₹)</a>
+                        <a href="{% url 'set_preference' %}?type=currency&value=USD">USD ($)</a>
+                        <a href="{% url 'set_preference' %}?type=currency&value=EUR">EUR (€)</a>
+                        <a href="{% url 'set_preference' %}?type=currency&value=GBP">GBP (£)</a>
+                    </div>
+                </div>
+
+                <!-- Language Switcher -->
+                <div class="dropdown">
+                    <button class="nav-icon-btn" title="Change Language"><i class="fas fa-globe"></i></button>
+                    <div class="dropdown-content">
+                        <a href="{% url 'set_preference' %}?type=language&value=en">English</a>
+                        <a href="{% url 'set_preference' %}?type=language&value=hi">Hindi</a>
+                        <a href="{% url 'set_preference' %}?type=language&value=fr">French</a>
+                        <a href="{% url 'set_preference' %}?type=language&value=es">Spanish</a>
+                    </div>
+                </div>
+
+                {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="btn btn-sm btn-outline">Dashboard</a>
+                <a href="{% url 'logout' %}" class="btn btn-sm btn-primary">Logout</a>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-sm btn-outline">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-sm btn-primary">Join</a>
+                {% endif %}
+            </div>
+
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ===== MESSAGES ===== -->
+    {% if messages %}
+    <div class="messages-container" style="position: fixed; top: 100px; right: 20px; z-index: 9999; max-width: 400px;">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-info-circle{% endif %}"></i>
+            <span>{{ message }}</span>
+            <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <span class="logo-text">Luxe<span>Stay</span></span>
+                    <p>Experience the epitome of luxury hospitality. From exquisite rooms to world-class dining.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4>Explore</h4>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'room_list' %}">Rooms & Suites</a></li>
+                        <li><a href="{% url 'restaurant_menu' %}">Fine Dining</a></li>
+                        <li><a href="{% url 'gallery' %}">Gallery</a></li>
+                        <li><a href="{% url 'blog_list' %}">Journal</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                        <li><a href="{% url 'about' %}">About Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-newsletter">
+                    <h4>Stay Updated</h4>
+                    <p>Exclusive offers and luxury travel tips.</p>
+                    <form class="newsletter-form" method="POST" action="{% url 'subscribe_newsletter' %}">
+                        {% csrf_token %}
+                        <input type="email" name="email" placeholder="Email" required>
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 LuxeStay Hotel Group. Crafted for Excellence.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== CHATBOT ===== -->
+    <button class="chatbot-toggle" id="chatbotToggle" aria-label="Open chat">
+        <i class="fas fa-comments"></i>
+    </button>
+    <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header">
+            <h4><i class="fas fa-robot"></i> LuxeStay AI Assistant</h4>
+            <button onclick="document.getElementById('chatbotWindow').classList.remove('active')"
+                style="background:none;border:none;color:white;cursor:pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chatbot-messages" id="chatMessages">
+            <div class="chat-message bot">
+                <div class="bubble">👋 Welcome to LuxeStay! How can I assist you with your luxury stay today?</div>
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatInput" placeholder="How can I help?" autocomplete="off">
+            <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- PWA Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register("{% static 'js/service-worker.js' %}");
+            });
+        }
+    </script>
+
+    <!-- Custom Scripts -->
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        // Dark Mode Logic
+        const darkModeBtn = document.getElementById('darkModeToggle');
+        if (darkModeBtn) {
+            darkModeBtn.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('darkMode', isDark);
+                darkModeBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            });
+            // Initial check
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+                darkModeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

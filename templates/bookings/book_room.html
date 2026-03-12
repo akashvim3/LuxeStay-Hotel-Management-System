@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Book {{ room.name }} - LuxeStay{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Book <span class="text-gold">Your Stay</span></h1>
+        <div class="section-divider"></div>
+        <div class="breadcrumb">
+            <a href="{% url 'home' %}">Home</a><span class="separator">/</span>
+            <a href="{% url 'room_list' %}">Rooms</a><span class="separator">/</span>
+            <span>Book</span>
+        </div>
+    </div>
+</div>
+<section class="section">
+    <div class="container" style="max-width:900px;">
+        <div class="grid-2" style="align-items:start;">
+            <!-- Room Info -->
+            <div class="card">
+                <div class="card-img">
+                    <img src="{{ room.get_image_url }}" alt="{{ room.name }}">
+                </div>
+                <div class="card-body">
+                    <span class="card-category">{{ room.category.name }}</span>
+                    <h3>{{ room.name }}</h3>
+                    <div class="card-meta">
+                        <span><i class="fas fa-user-friends"></i> {{ room.capacity }} Guests</span>
+                        <span><i class="fas fa-bed"></i> {{ room.bed_type }}</span>
+                    </div>
+                    <div class="card-price">
+                        <span class="current">₹{{ room.display_price|floatformat:0 }}</span>
+                        <span class="per-night">/ night</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Booking Form -->
+            <div class="form-card">
+                <h3 style="margin-bottom:var(--space-xl);">Booking Details</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <small style="color:var(--danger);">{{ field.errors.0 }}</small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary w-100 btn-lg">
+                        <i class="fas fa-check"></i> Confirm Booking
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

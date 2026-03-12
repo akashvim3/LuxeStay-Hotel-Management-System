@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Order - Table {{ table.table_number }} - LuxeStay{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Table <span class="text-gold">{{ table.table_number }}</span> Order</h1>
+        <p>Select your items and place your order directly to the kitchen.</p>
+    </div>
+</div>
+<section class="section">
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="grid-2">
+                {% for item in menu_items %}
+                <div class="glass-card p-2 d-flex align-center gap-1" style="height: 100px;">
+                    <input type="checkbox" name="items" value="{{ item.id }}" id="item-{{ item.id }}"
+                        style="width: 25px; height: 25px;">
+                    <label for="item-{{ item.id }}" style="flex:1; cursor:pointer;">
+                        <h4 style="margin:0;">{{ item.name }}</h4>
+                        <span class="text-gold">₹{{ item.display_price|floatformat:0 }}</span>
+                    </label>
+                    <img src="{{ item.get_image_url }}" alt="{{ item.name }}"
+                        style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;">
+                </div>
+                {% endfor %}
+            </div>
+            <div style="margin-top:2rem; text-align:center;">
+                <button type="submit" class="btn btn-primary btn-lg">Place Order</button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

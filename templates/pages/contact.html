@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}Contact Us - LuxeStay{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Contact <span class="text-gold">Us</span></h1>
+        <div class="section-divider"></div>
+        <div class="breadcrumb">
+            <a href="{% url 'home' %}">Home</a><span class="separator">/</span><span>Contact</span>
+        </div>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        <div class="grid-2" style="align-items:start;gap:var(--space-3xl);">
+            <!-- Contact Form -->
+            <div class="form-card">
+                <h3 style="margin-bottom:var(--space-xl);">Send Us a Message</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="grid-2" style="gap:var(--space-md);">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="Your name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-control" placeholder="your@email.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" name="phone" class="form-control" placeholder="+91 98765 43210">
+                    </div>
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" name="subject" class="form-control" placeholder="How can we help?" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea name="message" class="form-control" rows="5" placeholder="Your message..."
+                            required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+
+            <!-- Contact Info -->
+            <div>
+                <h3 style="margin-bottom:var(--space-xl);">Get in Touch</h3>
+                <p style="color:var(--medium-gray);margin-bottom:var(--space-2xl);line-height:1.8;">
+                    We'd love to hear from you. Whether you have a question about our services, pricing, or anything
+                    else, our team is ready to answer all your questions.
+                </p>
+
+                <div style="display:flex;flex-direction:column;gap:var(--space-xl);margin-bottom:var(--space-2xl);">
+                    <div class="d-flex align-center gap-1">
+                        <div
+                            style="width:55px;height:55px;border-radius:var(--radius-md);background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-map-marker-alt" style="color:var(--primary);font-size:1.2rem;"></i>
+                        </div>
+                        <div>
+                            <h5>Address</h5>
+                            <p style="color:var(--medium-gray);margin:0;">123 Luxury Avenue, Marine Drive, Mumbai
+                                400001, India</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-center gap-1">
+                        <div
+                            style="width:55px;height:55px;border-radius:var(--radius-md);background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-phone" style="color:var(--primary);font-size:1.2rem;"></i>
+                        </div>
+                        <div>
+                            <h5>Phone</h5>
+                            <p style="color:var(--medium-gray);margin:0;">+91 98765 43210<br>+91 11223 34455</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-center gap-1">
+                        <div
+                            style="width:55px;height:55px;border-radius:var(--radius-md);background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-envelope" style="color:var(--primary);font-size:1.2rem;"></i>
+                        </div>
+                        <div>
+                            <h5>Email</h5>
+                            <p style="color:var(--medium-gray);margin:0;">info@luxestay.com<br>reservations@luxestay.com
+                            </p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-center gap-1">
+                        <div
+                            style="width:55px;height:55px;border-radius:var(--radius-md);background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-clock" style="color:var(--primary);font-size:1.2rem;"></i>
+                        </div>
+                        <div>
+                            <h5>Hours</h5>
+                            <p style="color:var(--medium-gray);margin:0;">24/7 Available<br>Front Desk Open Always</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Links -->
+                <h5 style="margin-bottom:var(--space-md);">Follow Us</h5>
+                <div class="footer-social">
+                    <a href="#" style="background:rgba(201,168,76,0.15);color:var(--primary);"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a href="#" style="background:rgba(201,168,76,0.15);color:var(--primary);"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="#" style="background:rgba(201,168,76,0.15);color:var(--primary);"><i
+                            class="fab fa-twitter"></i></a>
+                    <a href="#" style="background:rgba(201,168,76,0.15);color:var(--primary);"><i
+                            class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Google Maps -->
+        <div
+            style="margin-top:var(--space-3xl);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg);">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3773.818!2d72.823!3d18.944!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTjCsDU2JzM4LjQiTiA3MsKwNDknMjIuOCJF!5e0!3m2!1sen!2sin!4v1234567890"
+                width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ room.name }} - LuxeStay{% endblock %}
+
+{% block content %}
+<!-- Detail Hero -->
+<div class="detail-hero">
+    <img src="{{ room.get_image_url }}" alt="{{ room.name }}">
+</div>
+
+<div class="detail-content">
+    <div class="detail-card">
+        <div class="d-flex justify-between align-center flex-wrap gap-1 mb-2">
+            <div>
+                <span class="card-category">{{ room.category.name }}</span>
+                <h1 style="font-size:2rem;">{{ room.name }}</h1>
+                <div class="card-rating mt-1">
+                    {% for i in "12345" %}
+                    <i class="fas fa-star"></i>
+                    {% endfor %}
+                    <span class="count">({{ room.total_reviews }} reviews)</span>
+                </div>
+            </div>
+            <div style="text-align:right;">
+                <div class="card-price" style="border:none;padding:0;margin:0;">
+                    <span class="current" style="font-size:2rem;">₹{{ room.display_price|floatformat:0 }}</span>
+                    {% if room.discounted_price %}<span class="original">₹{{ room.price_per_night|floatformat:0
+                        }}</span>{% endif %}
+                </div>
+                <span style="color:var(--medium-gray);font-size:0.9rem;">per night</span>
+            </div>
+        </div>
+
+        <div class="card-meta mb-2" style="font-size:0.95rem;">
+            <span><i class="fas fa-user-friends"></i> {{ room.capacity }} Guests</span>
+            <span><i class="fas fa-expand-arrows-alt"></i> {{ room.size_sqft }} sqft</span>
+            <span><i class="fas fa-bed"></i> {{ room.bed_type }}</span>
+            {% if room.is_available %}
+            <span style="color:var(--success);"><i class="fas fa-check-circle"></i> Available</span>
+            {% else %}
+            <span style="color:var(--danger);"><i class="fas fa-times-circle"></i> Unavailable</span>
+            {% endif %}
+        </div>
+
+        <h3 style="font-size:1.3rem;margin-bottom:var(--space-md);">Description</h3>
+        <p style="color:var(--dark-gray);line-height:1.9;margin-bottom:var(--space-2xl);">{{ room.description }}</p>
+
+        {% if room.amenities.all %}
+        <h3 style="font-size:1.3rem;margin-bottom:var(--space-md);">Amenities</h3>
+        <div class="amenity-list mb-2">
+            {% for amenity in room.amenities.all %}
+            <div class="amenity-item">
+                <i class="{{ amenity.icon }}"></i>
+                <span>{{ amenity.name }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if room.gallery_images.all %}
+        <h3 style="font-size:1.3rem;margin-bottom:var(--space-md);">Gallery</h3>
+        <div class="gallery-grid mb-2">
+            {% for img in room.gallery_images.all %}
+            <div class="gallery-item">
+                <img src="{{ img.get_image_url }}" alt="{{ img.caption|default:room.name }}" loading="lazy">
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="d-flex gap-1 mt-2">
+            <a href="{% url 'book_room' room.slug %}" class="btn btn-primary btn-lg" style="flex:1;">
+                <i class="fas fa-calendar-check"></i> Book This Room
+            </a>
+            <a href="{% url 'room_list' %}" class="btn btn-outline btn-lg">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+</div>
+
+{% if related_rooms %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="subtitle">You May Also Like</span>
+            <h2>Similar <span class="text-gold">Rooms</span></h2>
+            <div class="section-divider"></div>
+        </div>
+        <div class="grid-3">
+            {% for r in related_rooms %}
+            <div class="card">
+                <div class="card-img">
+                    <img src="{{ r.get_image_url }}" alt="{{ r.name }}" loading="lazy">
+                </div>
+                <div class="card-body">
+                    <span class="card-category">{{ r.category.name }}</span>
+                    <h3>{{ r.name }}</h3>
+                    <div class="card-price">
+                        <span class="current">₹{{ r.display_price|floatformat:0 }}</span>
+                        <span class="per-night">/ night</span>
+                    </div>
+                    <a href="{{ r.get_absolute_url }}" class="btn btn-dark btn-sm w-100 mt-1">View Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

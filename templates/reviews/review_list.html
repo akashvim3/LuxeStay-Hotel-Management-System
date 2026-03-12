@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Reviews - LuxeStay{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Guest <span class="text-gold">Reviews</span></h1>
+        <div class="section-divider"></div>
+    </div>
+</div>
+<section class="section">
+    <div class="container">
+        <div class="filter-pills">
+            <a href="{% url 'review_list' %}" class="filter-pill active">All</a>
+            <a href="{% url 'review_list' %}?type=room" class="filter-pill">Rooms</a>
+            <a href="{% url 'review_list' %}?type=restaurant" class="filter-pill">Restaurant</a>
+            <a href="{% url 'review_list' %}?type=general" class="filter-pill">General</a>
+        </div>
+        {% if user.is_authenticated %}
+        <div class="text-center mb-3">
+            <a href="{% url 'add_review' %}" class="btn btn-primary"><i class="fas fa-pen"></i> Write a Review</a>
+        </div>
+        {% endif %}
+        <div class="grid-3">
+            {% for review in reviews %}
+            <div class="testimonial-card">
+                <div class="testimonial-stars">
+                    {% for i in review.star_range %}<i class="fas fa-star"></i>{% endfor %}
+                    {% for i in review.empty_star_range %}<i class="far fa-star"></i>{% endfor %}
+                </div>
+                <h4 style="margin-bottom:var(--space-sm);">{{ review.title }}</h4>
+                <p class="testimonial-content">{{ review.content|truncatewords:30 }}</p>
+                <div class="testimonial-author">
+                    <div
+                        style="width:40px;height:40px;border-radius:50%;background:var(--primary-gradient);display:flex;align-items:center;justify-content:center;color:var(--secondary-dark);font-weight:700;">
+                        {{ review.user.first_name|first|default:review.user.username|first }}
+                    </div>
+                    <div>
+                        <span class="name">{{ review.user.get_full_name|default:review.user.username }}</span>
+                        <span class="role">{{ review.created_at|date:"M d, Y" }}</span>
+                    </div>
+                </div>
+                {% if review.is_verified %}<span class="badge-chef"
+                    style="margin-top:var(--space-sm);display:inline-block;"><i class="fas fa-check-circle"></i>
+                    Verified Stay</span>{% endif %}
+            </div>
+            {% empty %}
+            <div class="testimonial-card">
+                <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                        class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <h4 style="margin-bottom:var(--space-sm);">Absolutely Amazing!</h4>
+                <p class="testimonial-content">Everything was perfect from start to finish. The rooms are stunning, the
+                    food is incredible, and the staff goes above and beyond.</p>
+                <div class="testimonial-author">
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100" alt="Guest">
+                    <div><span class="name">Rajesh Kumar</span><span class="role">Mar 2024</span></div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                        class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <h4 style="margin-bottom:var(--space-sm);">Perfect Honeymoon</h4>
+                <p class="testimonial-content">Best honeymoon experience we could have wished for. The suite was
+                    gorgeous and the spa was heavenly.</p>
+                <div class="testimonial-author">
+                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100" alt="Guest">
+                    <div><span class="name">Priya Sharma</span><span class="role">Feb 2024</span></div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                        class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></div>
+                <h4 style="margin-bottom:var(--space-sm);">Outstanding Service</h4>
+                <p class="testimonial-content">The staff's attention to detail is remarkable. They remembered my
+                    preferences from my last visit!</p>
+                <div class="testimonial-author">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="Guest">
+                    <div><span class="name">Michael Chen</span><span class="role">Jan 2024</span></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

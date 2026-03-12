@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Reserve a Table - LuxeStay{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Reserve a <span class="text-gold">Table</span></h1>
+        <div class="section-divider"></div>
+        <div class="breadcrumb">
+            <a href="{% url 'home' %}">Home</a><span class="separator">/</span>
+            <a href="{% url 'restaurant_menu' %}">Restaurant</a><span class="separator">/</span>
+            <span>Reserve Table</span>
+        </div>
+    </div>
+</div>
+<section class="section">
+    <div class="container container-sm">
+        <div class="form-card">
+            <div class="text-center mb-3">
+                <i class="fas fa-utensils"
+                    style="font-size:3rem;color:var(--primary);margin-bottom:var(--space-md);"></i>
+                <h2>Table Reservation</h2>
+                <p style="color:var(--medium-gray);">Reserve your table for an unforgettable dining experience</p>
+            </div>
+            <form method="POST">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}<small style="color:var(--danger);">{{ field.errors.0 }}</small>{% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary w-100 btn-lg">
+                    <i class="fas fa-calendar-check"></i> Reserve Table
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

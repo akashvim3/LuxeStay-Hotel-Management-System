@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Complete Payment - LuxeStay{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Secure <span class="text-gold">Payment</span></h1>
+        <div class="section-divider"></div>
+        <div class="breadcrumb">
+            <a href="{% url 'home' %}">Home</a>
+            <span class="separator">/</span>
+            <span>Payment</span>
+        </div>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container" style="max-width: 1000px;">
+        <div class="grid-2" style="align-items: start; gap: var(--space-3xl);">
+            <!-- Booking Summary -->
+            <div class="form-card">
+                <h3 style="margin-bottom: var(--space-xl);">Booking Summary</h3>
+                <div style="display: flex; gap: var(--space-md); margin-bottom: var(--space-xl); align-items: center;">
+                    <img src="{{ booking.room.get_image_url }}" alt="{{ booking.room.name }}"
+                        style="width: 100px; height: 100px; border-radius: var(--radius-md); object-fit: cover;">
+                    <div>
+                        <h4 style="margin-bottom: 4px;">{{ booking.room.name }}</h4>
+                        <span class="card-category">{{ booking.room.category.name }}</span>
+                    </div>
+                </div>
+
+                <div
+                    style="display: flex; flex-direction: column; gap: var(--space-md); margin-bottom: var(--space-xl);">
+                    <div class="d-flex justify-between">
+                        <span style="color: var(--medium-gray);">Check-in</span>
+                        <span style="font-weight: 600;">{{ booking.check_in }}</span>
+                    </div>
+                    <div class="d-flex justify-between">
+                        <span style="color: var(--medium-gray);">Check-out</span>
+                        <span style="font-weight: 600;">{{ booking.check_out }}</span>
+                    </div>
+                    <div class="d-flex justify-between">
+                        <span style="color: var(--medium-gray);">Total Nights</span>
+                        <span style="font-weight: 600;">{{ booking.num_nights }}</span>
+                    </div>
+                    <div class="d-flex justify-between">
+                        <span style="color: var(--medium-gray);">Price per night</span>
+                        <span style="font-weight: 600;">₹{{ booking.room.display_price|floatformat:0 }}</span>
+                    </div>
+                </div>
+
+                <div
+                    style="border-top: 1px solid var(--cream); padding-top: var(--space-lg); display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="margin: 0;">Total Amount</h3>
+                    <h3 style="margin: 0; color: var(--primary);">₹{{ booking.total_amount|floatformat:0 }}</h3>
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="form-card">
+                <h3 style="margin-bottom: var(--space-xl);">Select Payment Method</h3>
+
+                <div
+                    style="display: flex; flex-direction: column; gap: var(--space-md); margin-bottom: var(--space-2xl);">
+                    <div
+                        style="padding: var(--space-md); border: 2px solid var(--primary); border-radius: var(--radius-md); background: rgba(201, 168, 76, 0.05); display: flex; align-items: center; gap: var(--space-md);">
+                        <input type="radio" name="payment_method" checked id="card">
+                        <label for="card"
+                            style="display: flex; align-items: center; gap: var(--space-sm); cursor: pointer; width: 100%;">
+                            <i class="fas fa-credit-card" style="color: var(--primary);"></i>
+                            <span>Credit / Debit Card</span>
+                            <div style="margin-left: auto; display: flex; gap: var(--space-xs);">
+                                <i class="fab fa-cc-visa"></i>
+                                <i class="fab fa-cc-mastercard"></i>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div
+                        style="padding: var(--space-md); border: 1px solid var(--cream); border-radius: var(--radius-md); display: flex; align-items: center; gap: var(--space-md); opacity: 0.6;">
+                        <input type="radio" name="payment_method" disabled id="upi">
+                        <label for="upi"
+                            style="display: flex; align-items: center; gap: var(--space-sm); cursor: pointer; width: 100%;">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>UPI (Coming Soon)</span>
+                        </label>
+                    </div>
+
+                    <div
+                        style="padding: var(--space-md); border: 1px solid var(--cream); border-radius: var(--radius-md); display: flex; align-items: center; gap: var(--space-md); opacity: 0.6;">
+                        <input type="radio" name="payment_method" disabled id="netbanking">
+                        <label for="netbanking"
+                            style="display: flex; align-items: center; gap: var(--space-sm); cursor: pointer; width: 100%;">
+                            <i class="fas fa-university"></i>
+                            <span>Net Banking (Coming Soon)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Card Number</label>
+                        <div style="position: relative;">
+                            <input type="text" class="form-control" placeholder="1234 5678 9101 1121" maxlength="19"
+                                required>
+                            <i class="fas fa-lock"
+                                style="position: absolute; right: 15px; top: 18px; color: var(--medium-gray);"></i>
+                        </div>
+                    </div>
+                    <div class="grid-2" style="gap: var(--space-md);">
+                        <div class="form-group">
+                            <label>Expiry Date</label>
+                            <input type="text" class="form-control" placeholder="MM/YY" maxlength="5" required>
+                        </div>
+                        <div class="form-group">
+                            <label>CVV</label>
+                            <input type="password" class="form-control" placeholder="***" maxlength="3" required>
+                        </div>
+                    </div>
+
+                    <div
+                        style="background: rgba(76, 175, 80, 0.1); padding: var(--space-md); border-radius: var(--radius-md); margin-bottom: var(--space-xl); display: flex; align-items: center; gap: var(--space-sm);">
+                        <i class="fas fa-shield-alt" style="color: var(--success);"></i>
+                        <span style="font-size: 0.85rem; color: #2e7d32;">Your payment is encrypted and secure.</span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-lock"></i> Pay ₹{{ booking.total_amount|floatformat:0 }}
+                    </button>
+                </form>
+
+                <p
+                    style="text-align: center; color: var(--medium-gray); font-size: 0.85rem; margin-top: var(--space-lg);">
+                    By clicking "Pay", you agree to our <a href="#" style="color: var(--primary);">Terms &
+                        Conditions</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Simple card formatting logic
+    const cardInput = document.querySelector('input[placeholder="1234 5678 9101 1121"]');
+    if (cardInput) {
+        cardInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            let formatted = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) formatted += ' ';
+                formatted += value[i];
+            }
+            e.target.value = formatted.substring(0, 19);
+        });
+    }
+
+    const expiryInput = document.querySelector('input[placeholder="MM/YY"]');
+    if (expiryInput) {
+        expiryInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\//g, '').replace(/[^0-9]/gi, '');
+            if (value.length > 2) {
+                e.target.value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            } else {
+                e.target.value = value;
+            }
+        });
+    }
+</script>
+{% endblock %}

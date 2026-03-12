@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}About Us - LuxeStay{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>About <span class="text-gold">LuxeStay</span></h1>
+        <div class="section-divider"></div>
+        <div class="breadcrumb">
+            <a href="{% url 'home' %}">Home</a><span class="separator">/</span><span>About</span>
+        </div>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        <div class="grid-2" style="align-items:center;">
+            <div>
+                <span class="subtitle" style="text-align:left;display:block;">Our Story</span>
+                <h2>A Legacy of <span class="text-gold">Excellence</span></h2>
+                <div class="section-divider" style="margin-left:0;"></div>
+                <p style="color:var(--dark-gray);line-height:1.9;margin-bottom:var(--space-lg);">
+                    Founded in 2010, LuxeStay has been setting the standard for luxury hospitality. Our commitment to
+                    excellence, attention to detail, and unwavering dedication to guest satisfaction has earned us a
+                    place among the world's finest hotels.
+                </p>
+                <p style="color:var(--dark-gray);line-height:1.9;margin-bottom:var(--space-xl);">
+                    Every aspect of LuxeStay has been meticulously crafted — from our architecturally stunning interiors
+                    to our Michelin-inspired cuisine, from our world-class spa to our personalized concierge service.
+                </p>
+                <div class="grid-2" style="gap:var(--space-lg);">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                        <div class="stat-info"><span class="number">50+</span><span class="label">Awards</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-info"><span class="number">15K+</span><span class="label">Happy Guests</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80" alt="LuxeStay Hotel"
+                    style="border-radius:var(--radius-lg);box-shadow:var(--shadow-xl);">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values -->
+<section class="section section-dark">
+    <div class="container">
+        <div class="section-header">
+            <span class="subtitle">What Defines Us</span>
+            <h2>Our <span class="text-gold">Values</span></h2>
+            <div class="section-divider"></div>
+        </div>
+        <div class="grid-4">
+            <div class="glass-card text-center">
+                <i class="fas fa-gem" style="font-size:2.5rem;color:var(--primary);margin-bottom:var(--space-md);"></i>
+                <h4 style="color:var(--white);margin-bottom:var(--space-sm);">Luxury</h4>
+                <p style="color:rgba(255,255,255,0.7);font-size:0.9rem;">Uncompromised quality in every detail of your
+                    experience.</p>
+            </div>
+            <div class="glass-card text-center">
+                <i class="fas fa-heart"
+                    style="font-size:2.5rem;color:var(--primary);margin-bottom:var(--space-md);"></i>
+                <h4 style="color:var(--white);margin-bottom:var(--space-sm);">Hospitality</h4>
+                <p style="color:rgba(255,255,255,0.7);font-size:0.9rem;">Warm, personalized service that makes you feel
+                    at home.</p>
+            </div>
+            <div class="glass-card text-center">
+                <i class="fas fa-leaf" style="font-size:2.5rem;color:var(--primary);margin-bottom:var(--space-sm);"></i>
+                <h4 style="color:var(--white);margin-bottom:var(--space-sm);">Sustainability</h4>
+                <p style="color:rgba(255,255,255,0.7);font-size:0.9rem;">Eco-conscious practices for a better tomorrow.
+                </p>
+            </div>
+            <div class="glass-card text-center">
+                <i class="fas fa-star" style="font-size:2.5rem;color:var(--primary);margin-bottom:var(--space-md);"></i>
+                <h4 style="color:var(--white);margin-bottom:var(--space-sm);">Excellence</h4>
+                <p style="color:rgba(255,255,255,0.7);font-size:0.9rem;">Constantly raising the bar for luxury
+                    hospitality.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

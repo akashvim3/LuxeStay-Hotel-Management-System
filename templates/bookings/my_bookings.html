@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}My Bookings - LuxeStay{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>My <span class="text-gold">Bookings</span></h1>
+        <div class="section-divider"></div>
+    </div>
+</div>
+<section class="section">
+    <div class="container">
+        <h3 style="margin-bottom:var(--space-xl);"><i class="fas fa-bed" style="color:var(--primary);"></i> Room
+            Bookings</h3>
+        {% if room_bookings %}
+        <div class="table-container mb-3">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Room</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in room_bookings %}
+                    <tr>
+                        <td><code>{{ b.booking_id|truncatechars:12 }}</code></td>
+                        <td>{{ b.room.name }}</td>
+                        <td>{{ b.check_in }}</td>
+                        <td>{{ b.check_out }}</td>
+                        <td>₹{{ b.total_amount|floatformat:0 }}</td>
+                        <td><span class="status-badge status-{{ b.status }}">{{ b.get_status_display }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="color:var(--medium-gray);margin-bottom:var(--space-2xl);">No room bookings yet. <a
+                href="{% url 'room_list' %}" style="color:var(--primary);">Browse rooms</a></p>
+        {% endif %}
+
+        <h3 style="margin-bottom:var(--space-xl);"><i class="fas fa-utensils" style="color:var(--primary);"></i> Table
+            Reservations</h3>
+        {% if table_reservations %}
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Reservation ID</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Guests</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in table_reservations %}
+                    <tr>
+                        <td><code>{{ r.reservation_id|truncatechars:12 }}</code></td>
+                        <td>{{ r.date }}</td>
+                        <td>{{ r.time }}</td>
+                        <td>{{ r.guests }}</td>
+                        <td><span class="status-badge status-{{ r.status }}">{{ r.get_status_display }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="color:var(--medium-gray);">No table reservations yet. <a href="{% url 'reserve_table' %}"
+                style="color:var(--primary);">Reserve a table</a></p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

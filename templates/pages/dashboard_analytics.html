@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Analytics - LuxeStay{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        background: rgba(201, 168, 76, 0.1);
+        color: var(--gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--black);
+    }
+
+    .chart-container {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+    }
+
+    .chart-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+    }
+
+    @media (max-width: 992px) {
+        .chart-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .table-container {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+    }
+
+    .premium-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .premium-table th {
+        text-align: left;
+        padding: 1rem;
+        border-bottom: 2px solid var(--cream);
+        color: var(--medium-gray);
+    }
+
+    .premium-table td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--cream);
+    }
+
+    .dish-img {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        object-fit: cover;
+        margin-right: 10px;
+    }
+
+    .activity-item {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 10px;
+        border-left: 4px solid var(--gold);
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="section-padding section-cream">
+    <div class="container">
+        <div class="section-header text-center">
+            <span class="sub-title">Performance Overview</span>
+            <h2>Business <span class="text-gold">Analytics</span></h2>
+        </div>
+
+        <div class="analytics-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="stat-value">{{ total_bookings }}</div>
+                <div class="stat-label">Total Bookings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+                <div class="stat-value">₹{{ total_revenue|floatformat:0 }}</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="stat-value">{{ pending_bookings }}</div>
+                <div class="stat-label">Pending Bookings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-star"></i></div>
+                <div class="stat-value">4.8</div>
+                <div class="stat-label">Avg. Rating</div>
+            </div>
+        </div>
+
+        <div class="chart-grid">
+            <div class="chart-container">
+                <h4 class="mb-4">Booking Trend (Last 30 Days)</h4>
+                <canvas id="bookingChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h4 class="mb-4">Revenue by Category</h4>
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-grid mt-4">
+            <div class="table-container">
+                <h4 class="mb-4">Top 5 Popular Dishes</h4>
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Dish</th>
+                            <th>Category</th>
+                            <th>Orders</th>
+                            <th>Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dish in popular_dishes %}
+                        <tr>
+                            <td style="display: flex; align-items: center;">
+                                <img src="{{ dish.get_image_url }}" class="dish-img" alt="">
+                                <span>{{ dish.name }}</span>
+                            </td>
+                            <td>{{ dish.category.name }}</td>
+                            <td>{{ dish.total_orders }}</td>
+                            <td>₹{{ dish.price }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-container">
+                <h4 class="mb-4">Live Activity <span class="badge badge-success"
+                        style="font-size: 0.6rem; vertical-align: middle;">Live</span></h4>
+                <div id="activityFeed" style="max-height: 350px; overflow-y: auto;">
+                    <div class="activity-item">
+                        <small class="text-muted">Just now</small>
+                        <p class="mb-0"><strong>New Table Order</strong> for Table #4</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="/admin/" class="btn btn-outline">Go to Django Admin</a>
+        </div>
+    </div>
+</section>
+
+<!-- Data for Charts (JSON) -->
+{{ chart_labels|json_script:"chart-labels-data" }}
+{{ chart_data|json_script:"chart-data-data" }}
+{{ revenue_labels|json_script:"revenue-labels-data" }}
+{{ revenue_data|json_script:"revenue-data-data" }}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Fetch data from json_script tags
+        const chartLabels = JSON.parse(document.getElementById('chart-labels-data').textContent);
+        const chartData = JSON.parse(document.getElementById('chart-data-data').textContent);
+        const revenueLabels = JSON.parse(document.getElementById('revenue-labels-data').textContent);
+        const revenueData = JSON.parse(document.getElementById('revenue-data-data').textContent);
+
+        // Booking Trend Chart
+        const bookingCtx = document.getElementById('bookingChart').getContext('2d');
+        new Chart(bookingCtx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Bookings',
+                    data: chartData,
+                    borderColor: '#c9a84c',
+                    backgroundColor: 'rgba(201, 168, 76, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+
+        // Revenue Doughnut Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'doughnut',
+            data: {
+                labels: revenueLabels,
+                datasets: [{
+                    data: revenueData,
+                    backgroundColor: ['#c9a84c', '#1a1a1a', '#a0a0a0', '#e0e0e0'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+
+        // Live Activity Mock
+        const feed = document.getElementById('activityFeed');
+        const activities = [
+            "New Room Booking - Suite #204",
+            "Table #12 Requested Bill",
+            "New Review: 5 Stars for Dining",
+            "Inventory Alert: Low Wine Stock",
+            "Room #105 Checked Out"
+        ];
+
+        setInterval(() => {
+            const item = document.createElement('div');
+            item.className = 'activity-item';
+            item.style.animation = 'slideInRight 0.5s ease-out';
+            item.innerHTML = `
+                <small class="text-muted">Just now</small>
+                <p class="mb-0"><strong>${activities[Math.floor(Math.random() * activities.length)]}</strong></p>
+            `;
+            feed.prepend(item);
+            if (feed.children.length > 5) feed.lastElementChild.remove();
+        }, 8000);
+    });
+</script>
+{% endblock %}

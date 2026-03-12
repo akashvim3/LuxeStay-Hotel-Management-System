@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}Blog - LuxeStay{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Our <span class="text-gold">Blog</span></h1>
+        <div class="section-divider"></div>
+        <div class="breadcrumb">
+            <a href="{% url 'home' %}">Home</a><span class="separator">/</span><span>Blog</span>
+        </div>
+    </div>
+</div>
+<section class="section">
+    <div class="container">
+        {% if categories %}
+        <div class="filter-pills">
+            <a href="{% url 'blog_list' %}" class="filter-pill {% if not selected_category %}active{% endif %}">All</a>
+            {% for cat in categories %}
+            <a href="{% url 'blog_list' %}?category={{ cat.slug }}"
+                class="filter-pill {% if selected_category == cat.slug %}active{% endif %}">{{ cat.name }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="grid-3">
+            {% for post in posts %}
+            <div class="card">
+                <div class="card-img">
+                    <img src="{{ post.get_image_url }}" alt="{{ post.title }}" loading="lazy">
+                    {% if post.is_featured %}<span class="card-badge">Featured</span>{% endif %}
+                </div>
+                <div class="card-body">
+                    <span class="card-category">{{ post.category.name }}</span>
+                    <h3>{{ post.title }}</h3>
+                    <p>{{ post.excerpt|default:post.content|truncatewords:20 }}</p>
+                    <div class="card-meta">
+                        <span><i class="fas fa-user"></i> {{ post.author.get_full_name|default:post.author.username
+                            }}</span>
+                        <span><i class="fas fa-calendar"></i> {{ post.created_at|date:"M d, Y" }}</span>
+                        <span><i class="fas fa-eye"></i> {{ post.views_count }}</span>
+                    </div>
+                    <a href="{% url 'blog_detail' post.slug %}" class="btn btn-dark btn-sm w-100 mt-1">Read More</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="card">
+                <div class="card-img"><img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80"
+                        alt="Blog" loading="lazy"></div>
+                <div class="card-body">
+                    <span class="card-category">Travel</span>
+                    <h3>Top 10 Luxury Destinations for 2024</h3>
+                    <p>Discover the world's most exclusive travel destinations and what makes them unforgettable
+                        experiences.</p>
+                    <div class="card-meta"><span><i class="fas fa-calendar"></i> Mar 1, 2024</span></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80"
+                        alt="Blog" loading="lazy"></div>
+                <div class="card-body">
+                    <span class="card-category">Dining</span>
+                    <h3>The Art of Fine Dining Etiquette</h3>
+                    <p>A comprehensive guide to mastering dining etiquette for an unforgettable fine dining experience.
+                    </p>
+                    <div class="card-meta"><span><i class="fas fa-calendar"></i> Feb 15, 2024</span></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbec6d?w=800&q=80"
+                        alt="Blog" loading="lazy"></div>
+                <div class="card-body">
+                    <span class="card-category">Wellness</span>
+                    <h3>Spa Treatments That Transform Your Well-being</h3>
+                    <p>Explore our signature spa treatments designed to rejuvenate your body and mind completely.</p>
+                    <div class="card-meta"><span><i class="fas fa-calendar"></i> Feb 10, 2024</span></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

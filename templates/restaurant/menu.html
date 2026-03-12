@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Restaurant & Menu - LuxeStay{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Our <span class="text-gold">Restaurant</span></h1>
+        <div class="section-divider"></div>
+        <div class="breadcrumb">
+            <a href="{% url 'home' %}">Home</a>
+            <span class="separator">/</span>
+            <span>Restaurant</span>
+        </div>
+    </div>
+</div>
+
+<!-- Chef Specials -->
+{% if chef_specials %}
+<section class="section section-dark">
+    <div class="container">
+        <div class="section-header">
+            <span class="subtitle">Curated by Our Chefs</span>
+            <h2>Chef's <span class="text-gold">Specials</span></h2>
+            <div class="section-divider"></div>
+        </div>
+        <div class="grid-3">
+            {% for item in chef_specials %}
+            <div class="glass-card">
+                <div style="display:flex;align-items:center;gap:var(--space-md);margin-bottom:var(--space-md);">
+                    <img src="{{ item.get_image_url }}" alt="{{ item.name }}"
+                        style="width:80px;height:80px;border-radius:var(--radius-md);object-fit:cover;">
+                    <div>
+                        <h4 style="color:var(--white);font-size:1.1rem;">{{ item.name }}</h4>
+                        <span class="{{ item.diet_badge_class }}">{{ item.get_diet_type_display }}</span>
+                    </div>
+                </div>
+                <p style="color:rgba(255,255,255,0.7);font-size:0.9rem;margin-bottom:var(--space-md);">{{
+                    item.description|truncatewords:15 }}</p>
+                <div class="d-flex justify-between align-center">
+                    <span class="menu-price" style="color:var(--primary);">₹{{ item.display_price|floatformat:0
+                        }}</span>
+                    <span class="badge-chef"><i class="fas fa-star"></i> Chef's Special</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Full Menu -->
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="subtitle">Digital Menu</span>
+            <h2>Explore Our <span class="text-gold">Menu</span></h2>
+            <div class="section-divider"></div>
+        </div>
+
+        <!-- Diet Filter -->
+        <div class="filter-pills">
+            <a href="{% url 'restaurant_menu' %}"
+                class="filter-pill {% if not selected_diet %}active{% endif %}">All</a>
+            <a href="{% url 'restaurant_menu' %}?diet=veg"
+                class="filter-pill {% if selected_diet == 'veg' %}active{% endif %}">🥬 Vegetarian</a>
+            <a href="{% url 'restaurant_menu' %}?diet=non_veg"
+                class="filter-pill {% if selected_diet == 'non_veg' %}active{% endif %}">🍖 Non-Vegetarian</a>
+            <a href="{% url 'restaurant_menu' %}?diet=vegan"
+                class="filter-pill {% if selected_diet == 'vegan' %}active{% endif %}">🌱 Vegan</a>
+        </div>
+
+        <!-- Category Filter -->
+        {% if categories %}
+        <div class="filter-pills" style="margin-bottom:var(--space-xl);">
+            <a href="{% url 'restaurant_menu' %}"
+                class="filter-pill {% if not selected_category %}active{% endif %}">All Categories</a>
+            {% for cat in categories %}
+            <a href="{% url 'restaurant_menu' %}?category={{ cat.slug }}"
+                class="filter-pill {% if selected_category == cat.slug %}active{% endif %}">{{ cat.name }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="grid-2">
+            {% for item in menu_items %}
+            <div class="menu-card">
+                <div class="menu-card-img">
+                    <img src="{{ item.get_image_url }}" alt="{{ item.name }}" loading="lazy">
+                </div>
+                <div class="menu-card-body">
+                    <div class="d-flex align-center gap-1" style="margin-bottom:var(--space-xs);flex-wrap:wrap;">
+                        <h4 style="margin:0;">{{ item.name }}</h4>
+                        <span class="{{ item.diet_badge_class }}">{{ item.get_diet_type_display }}</span>
+                    </div>
+                    <p>{{ item.description|truncatewords:12 }}</p>
+                    <div class="d-flex justify-between align-center">
+                        <span class="menu-price">₹{{ item.display_price|floatformat:0 }}</span>
+                        {% if item.prep_time %}
+                        <span style="font-size:0.8rem;color:var(--medium-gray);"><i class="fas fa-clock"></i> {{
+                            item.prep_time }} min</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Default menu items when database is empty -->
+            <div class="menu-card">
+                <div class="menu-card-img">
+                    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80" alt="Lamb Rack">
+                </div>
+                <div class="menu-card-body">
+                    <div class="d-flex align-center gap-1" style="margin-bottom:var(--space-xs);">
+                        <h4 style="margin:0;">Herb-Crusted Lamb Rack</h4>
+                        <span class="badge-nonveg">Non-Veg</span>
+                    </div>
+                    <p>Tender lamb with rosemary crust and truffle mash</p>
+                    <span class="menu-price">₹1,899</span>
+                </div>
+            </div>
+            <div class="menu-card">
+                <div class="menu-card-img">
+                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80" alt="Quinoa Bowl">
+                </div>
+                <div class="menu-card-body">
+                    <div class="d-flex align-center gap-1" style="margin-bottom:var(--space-xs);">
+                        <h4 style="margin:0;">Mediterranean Quinoa Bowl</h4>
+                        <span class="badge-veg">Veg</span>
+                    </div>
+                    <p>Organic quinoa with roasted vegetables and tahini</p>
+                    <span class="menu-price">₹899</span>
+                </div>
+            </div>
+            <div class="menu-card">
+                <div class="menu-card-img">
+                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80" alt="Pizza">
+                </div>
+                <div class="menu-card-body">
+                    <div class="d-flex align-center gap-1" style="margin-bottom:var(--space-xs);">
+                        <h4 style="margin:0;">Wood-Fired Margherita</h4>
+                        <span class="badge-veg">Veg</span>
+                    </div>
+                    <p>Classic Neapolitan pizza with fresh mozzarella and basil</p>
+                    <span class="menu-price">₹699</span>
+                </div>
+            </div>
+            <div class="menu-card">
+                <div class="menu-card-img">
+                    <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&q=80" alt="Pancakes">
+                </div>
+                <div class="menu-card-body">
+                    <div class="d-flex align-center gap-1" style="margin-bottom:var(--space-xs);">
+                        <h4 style="margin:0;">Fluffy Maple Pancakes</h4>
+                        <span class="badge-veg">Veg</span>
+                    </div>
+                    <p>Buttermilk pancakes with maple syrup and fresh berries</p>
+                    <span class="menu-price">₹499</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="{% url 'reserve_table' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-calendar-check"></i> Reserve a Table
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

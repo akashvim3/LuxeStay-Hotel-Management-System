@@ -1,0 +1,722 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}LuxeStay - Luxury Hotel & Fine Dining Experience{% endblock %}
+
+{% block content %}
+<!-- ===== HERO SECTION ===== -->
+<section class="hero" id="hero">
+    <div class="hero-bg">
+        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&q=80" alt="LuxeStay Hotel"
+            loading="eager">
+    </div>
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-star"></i> Premium 5-Star Experience
+            </div>
+            <h1>Experience <span>Luxury</span> Like Never Before</h1>
+            <p>Discover the perfect blend of elegance, comfort, and world-class hospitality. Your extraordinary escape
+                awaits at LuxeStay.</p>
+            <div class="hero-actions">
+                <a href="{% url 'room_list' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-bed"></i> Explore Rooms
+                </a>
+                <a href="{% url 'restaurant_menu' %}" class="btn btn-outline-white btn-lg">
+                    <i class="fas fa-utensils"></i> View Menu
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="number">250+</span>
+                    <span class="label">Luxury Rooms</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="number">4.9</span>
+                    <span class="label">Guest Rating</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="number">15K+</span>
+                    <span class="label">Happy Guests</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="number">50+</span>
+                    <span class="label">Awards Won</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== AVAILABILITY CHECKER ===== -->
+<section class="container" style="position: relative; z-index: 10;">
+    <div class="availability-checker light">
+        <form class="checker-form" method="GET" action="{% url 'room_list' %}">
+            <div class="checker-field">
+                <label><i class="fas fa-calendar-alt"></i> Check In</label>
+                <input type="date" name="check_in" required>
+            </div>
+            <div class="checker-field">
+                <label><i class="fas fa-calendar-alt"></i> Check Out</label>
+                <input type="date" name="check_out" required>
+            </div>
+            <div class="checker-field">
+                <label><i class="fas fa-user-friends"></i> Guests</label>
+                <select name="guests">
+                    <option value="1">1 Guest</option>
+                    <option value="2" selected>2 Guests</option>
+                    <option value="3">3 Guests</option>
+                    <option value="4">4 Guests</option>
+                    <option value="5">5+ Guests</option>
+                </select>
+            </div>
+            <div class="checker-field">
+                <label><i class="fas fa-door-open"></i> Room Type</label>
+                <select name="category">
+                    <option value="">All Types</option>
+                    <option value="standard">Standard</option>
+                    <option value="deluxe">Deluxe</option>
+                    <option value="suite">Suite</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-search"></i> Check
+            </button>
+        </form>
+    </div>
+</section>
+
+<!-- ===== FEATURED ROOMS ===== -->
+<section class="section" id="rooms">
+    <div class="container">
+        <div class="section-header">
+            <span class="subtitle">Accommodation</span>
+            <h2>Our Finest <span class="text-gold">Rooms & Suites</span></h2>
+            <div class="section-divider"></div>
+            <p>Each room is a sanctuary of comfort, designed with exquisite attention to detail and equipped with
+                world-class amenities.</p>
+        </div>
+
+        <div class="grid-3">
+            {% for room in featured_rooms %}
+            <div class="card">
+                <div class="card-img">
+                    <img src="{{ room.get_image_url }}" alt="{{ room.name }}" loading="lazy">
+                    {% if room.is_featured %}
+                    <span class="card-badge">Featured</span>
+                    {% endif %}
+                    {% if room.discount_percentage > 0 %}
+                    <span class="card-badge card-badge-discount">{{ room.discount_percentage }}% OFF</span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <span class="card-category">{{ room.category.name }}</span>
+                    <h3>{{ room.name }}</h3>
+                    <p>{{ room.short_description|default:room.description|truncatewords:15 }}</p>
+                    <div class="card-meta">
+                        <span><i class="fas fa-user-friends"></i> {{ room.capacity }} Guests</span>
+                        <span><i class="fas fa-expand-arrows-alt"></i> {{ room.size_sqft }} sqft</span>
+                        <span><i class="fas fa-bed"></i> {{ room.bed_type }}</span>
+                    </div>
+                    <div class="card-price">
+                        <span class="current">₹{{ room.display_price|floatformat:0 }}</span>
+                        {% if room.discounted_price %}
+                        <span class="original">₹{{ room.price_per_night|floatformat:0 }}</span>
+                        {% endif %}
+                        <span class="per-night">/ night</span>
+                    </div>
+                    <a href="{{ room.get_absolute_url }}" class="btn btn-dark btn-sm w-100 mt-1">View Details</a>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Default cards when no data -->
+            <div class="card">
+                <div class="card-img">
+                    <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80"
+                        alt="Standard Room" loading="lazy">
+                    <span class="card-badge">Popular</span>
+                </div>
+                <div class="card-body">
+                    <span class="card-category">Standard</span>
+                    <h3>Elegant Standard Room</h3>
+                    <p>Beautifully appointed room with modern amenities and city views.</p>
+                    <div class="card-meta">
+                        <span><i class="fas fa-user-friends"></i> 2 Guests</span>
+                        <span><i class="fas fa-expand-arrows-alt"></i> 350 sqft</span>
+                    </div>
+                    <div class="card-price">
+                        <span class="current">₹4,999</span>
+                        <span class="per-night">/ night</span>
+                    </div>
+                    <a href="{% url 'room_list' %}" class="btn btn-dark btn-sm w-100 mt-1">View Details</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img">
+                    <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80" alt="Deluxe Room"
+                        loading="lazy">
+                    <span class="card-badge">Best Value</span>
+                </div>
+                <div class="card-body">
+                    <span class="card-category">Deluxe</span>
+                    <h3>Premium Deluxe Room</h3>
+                    <p>Spacious luxury room with panoramic views and premium furnishings.</p>
+                    <div class="card-meta">
+                        <span><i class="fas fa-user-friends"></i> 3 Guests</span>
+                        <span><i class="fas fa-expand-arrows-alt"></i> 500 sqft</span>
+                    </div>
+                    <div class="card-price">
+                        <span class="current">₹8,999</span>
+                        <span class="original">₹10,999</span>
+                        <span class="per-night">/ night</span>
+                    </div>
+                    <a href="{% url 'room_list' %}" class="btn btn-dark btn-sm w-100 mt-1">View Details</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img">
+                    <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80" alt="Royal Suite"
+                        loading="lazy">
+                    <span class="card-badge">Luxury</span>
+                    <span class="card-badge card-badge-discount">20% OFF</span>
+                </div>
+                <div class="card-body">
+                    <span class="card-category">Suite</span>
+                    <h3>Royal Presidential Suite</h3>
+                    <p>The ultimate luxury experience with a private terrace and butler service.</p>
+                    <div class="card-meta">
+                        <span><i class="fas fa-user-friends"></i> 4 Guests</span>
+                        <span><i class="fas fa-expand-arrows-alt"></i> 900 sqft</span>
+                    </div>
+                    <div class="card-price">
+                        <span class="current">₹14,999</span>
+                        <span class="original">₹18,999</span>
+                        <span class="per-night">/ night</span>
+                    </div>
+                    <a href="{% url 'room_list' %}" class="btn btn-dark btn-sm w-100 mt-1">View Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="{% url 'room_list' %}" class="btn btn-outline btn-lg">
+                View All Rooms <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== RESTAURANT HIGHLIGHTS ===== -->
+<section class="section section-dark" id="restaurant">
+    <div class="container">
+        <div class="section-header">
+            <span class="subtitle">Culinary Excellence</span>
+            <h2>Exquisite <span class="text-gold">Dining</span> Experience</h2>
+            <div class="section-divider"></div>
+            <p>Savor world-class cuisine crafted by our award-winning chefs using the finest ingredients from around the
+                globe.</p>
+        </div>
+
+        <div class="grid-2">
+            <div style="display:flex;flex-direction:column;gap:var(--space-md);">
+                {% for item in chef_specials %}
+                <div class="menu-card">
+                    <div class="menu-card-img">
+                        <img src="{{ item.get_image_url }}" alt="{{ item.name }}" loading="lazy">
+                    </div>
+                    <div class="menu-card-body">
+                        <div class="d-flex align-center gap-1 mb-1">
+                            <h4>{{ item.name }}</h4>
+                            <span class="{{ item.diet_badge_class }}">{{ item.get_diet_type_display }}</span>
+                            {% if item.is_chef_special %}<span class="badge-chef">Chef's Special</span>{% endif %}
+                        </div>
+                        <p>{{ item.description|truncatewords:12 }}</p>
+                        <span class="menu-price">₹{{ item.display_price|floatformat:0 }}</span>
+                    </div>
+                </div>
+                {% empty %}
+                <!-- Default menu items -->
+                <div class="menu-card">
+                    <div class="menu-card-img">
+                        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80"
+                            alt="Grilled Lamb" loading="lazy">
+                    </div>
+                    <div class="menu-card-body">
+                        <div class="d-flex align-center gap-1 mb-1">
+                            <h4>Herb-Crusted Lamb Rack</h4>
+                            <span class="badge-nonveg">Non-Veg</span>
+                            <span class="badge-chef">Chef's Special</span>
+                        </div>
+                        <p>Tender lamb with rosemary crust, truffle mash, and red wine jus</p>
+                        <span class="menu-price">₹1,899</span>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <div class="menu-card-img">
+                        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
+                            alt="Quinoa Bowl" loading="lazy">
+                    </div>
+                    <div class="menu-card-body">
+                        <div class="d-flex align-center gap-1 mb-1">
+                            <h4>Mediterranean Quinoa Bowl</h4>
+                            <span class="badge-veg">Veg</span>
+                            <span class="badge-chef">Chef's Special</span>
+                        </div>
+                        <p>Organic quinoa with roasted vegetables, feta, and lemon tahini</p>
+                        <span class="menu-price">₹899</span>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <div class="menu-card-img">
+                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80" alt="Lobster"
+                            loading="lazy">
+                    </div>
+                    <div class="menu-card-body">
+                        <div class="d-flex align-center gap-1 mb-1">
+                            <h4>Grilled Atlantic Lobster</h4>
+                            <span class="badge-nonveg">Non-Veg</span>
+                        </div>
+                        <p>Fresh lobster tail with garlic butter, asparagus, and saffron rice</p>
+                        <span class="menu-price">₹2,499</span>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <div class="menu-card-img">
+                        <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&q=80"
+                            alt="Pancakes" loading="lazy">
+                    </div>
+                    <div class="menu-card-body">
+                        <div class="d-flex align-center gap-1 mb-1">
+                            <h4>Truffle Mushroom Risotto</h4>
+                            <span class="badge-veg">Veg</span>
+                        </div>
+                        <p>Creamy arborio rice with wild mushrooms and black truffle shavings</p>
+                        <span class="menu-price">₹1,199</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div style="display:flex;flex-direction:column;justify-content:center;padding:var(--space-2xl);">
+                <span class="subtitle" style="text-align:left;">Why Dine With Us</span>
+                <h3 style="color:var(--white);margin-bottom:var(--space-lg);">A Culinary Journey Like <span
+                        class="text-gold">No Other</span></h3>
+                <p style="color:rgba(255,255,255,0.7);margin-bottom:var(--space-2xl);line-height:1.9;">
+                    Our award-winning restaurant combines the finest ingredients with innovative techniques to create
+                    unforgettable dining experiences. From intimate dinners to grand celebrations, every meal is a
+                    masterpiece.
+                </p>
+                <div style="display:flex;flex-direction:column;gap:var(--space-lg);">
+                    <div class="d-flex align-center gap-1">
+                        <div
+                            style="width:50px;height:50px;border-radius:50%;background:rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-award" style="color:var(--primary);font-size:1.2rem;"></i>
+                        </div>
+                        <div>
+                            <h5 style="color:var(--white);margin-bottom:4px;">Award-Winning Chefs</h5>
+                            <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;margin:0;">Michelin-trained culinary
+                                masters at your service</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-center gap-1">
+                        <div
+                            style="width:50px;height:50px;border-radius:50%;background:rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-leaf" style="color:var(--primary);font-size:1.2rem;"></i>
+                        </div>
+                        <div>
+                            <h5 style="color:var(--white);margin-bottom:4px;">Farm-to-Table Fresh</h5>
+                            <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;margin:0;">Locally sourced, organic
+                                ingredients daily</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-center gap-1">
+                        <div
+                            style="width:50px;height:50px;border-radius:50%;background:rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-wine-glass-alt" style="color:var(--primary);font-size:1.2rem;"></i>
+                        </div>
+                        <div>
+                            <h5 style="color:var(--white);margin-bottom:4px;">Curated Wine Collection</h5>
+                            <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;margin:0;">Over 200 wines from
+                                world-renowned vineyards</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top:var(--space-2xl);">
+                    <a href="{% url 'restaurant_menu' %}" class="btn btn-primary">
+                        <i class="fas fa-utensils"></i> View Full Menu
+                    </a>
+                    <a href="{% url 'reserve_table' %}" class="btn btn-outline-white"
+                        style="margin-left:var(--space-md);">
+                        <i class="fas fa-calendar-check"></i> Reserve Table
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== EVENTS & VENUES ===== -->
+<section class="section" id="events">
+    <div class="container">
+        <div class="section-header">
+            <span class="subtitle">Grand Celebrations</span>
+            <h2>Events & <span class="text-gold">Venues</span></h2>
+            <div class="section-divider"></div>
+            <p>Host your most memorable moments in our magnificent event spaces, perfectly suited for weddings,
+                conferences, and parties.</p>
+        </div>
+
+        <div class="grid-3">
+            {% for space in event_spaces %}
+            <div class="card event-card">
+                <div class="card-img">
+                    <img src="{{ space.image|default:'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800' }}"
+                        alt="{{ space.name }}" loading="lazy">
+                    <span class="card-badge">Available</span>
+                </div>
+                <div class="card-body">
+                    <h3>{{ space.name }}</h3>
+                    <p>{{ space.description|truncatewords:15 }}</p>
+                    <div class="card-meta">
+                        <span><i class="fas fa-users"></i> Capacity: {{ space.capacity }}</span>
+                        <span><i class="fas fa-tag"></i> From ₹{{ space.price_per_hour|floatformat:0 }}/hr</span>
+                    </div>
+                    <a href="{% url 'event_list' %}" class="btn btn-dark btn-sm w-100 mt-1">Book Venue</a>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Default event cards when no data -->
+            <div class="card event-card">
+                <div class="card-img">
+                    <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80"
+                        alt="Grand Ballroom" loading="lazy">
+                    <span class="card-badge">Wedding</span>
+                </div>
+                <div class="card-body">
+                    <h3>The Royal Grand Ballroom</h3>
+                    <p>A magnificent space with crystal chandeliers and regal decor for grand weddings.</p>
+                    <div class="card-meta">
+                        <span><i class="fas fa-users"></i> 500+ Guests</span>
+                        <span><i class="fas fa-tag"></i> Premium Venue</span>
+                    </div>
+                    <a href="{% url 'event_list' %}" class="btn btn-dark btn-sm w-100 mt-1">View Venue</a>
+                </div>
+            </div>
+            <div class="card event-card">
+                <div class="card-img">
+                    <img src="https://images.unsplash.com/photo-1431540015161-0bf868a2d407?w=800&q=80"
+                        alt="Conference Room" loading="lazy">
+                    <span class="card-badge">Corporate</span>
+                </div>
+                <div class="card-body">
+                    <h3>Elite Business Centre</h3>
+                    <p>State-of-the-art conference facilities with modern tech for corporate retreats.</p>
+                    <div class="card-meta">
+                        <span><i class="fas fa-users"></i> 100+ Guests</span>
+                        <span><i class="fas fa-tag"></i> Professional</span>
+                    </div>
+                    <a href="{% url 'event_list' %}" class="btn btn-dark btn-sm w-100 mt-1">View Venue</a>
+                </div>
+            </div>
+            <div class="card event-card">
+                <div class="card-img">
+                    <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&q=80"
+                        alt="Rooftop Terrace" loading="lazy">
+                    <span class="card-badge">Party</span>
+                </div>
+                <div class="card-body">
+                    <h3>Skyline Rooftop Lounge</h3>
+                    <p>Breathtaking city views and vibrant atmosphere for unforgettable parties.</p>
+                    <div class="card-meta">
+                        <span><i class="fas fa-users"></i> 150+ Guests</span>
+                        <span><i class="fas fa-tag"></i> Trending</span>
+                    </div>
+                    <a href="{% url 'event_list' %}" class="btn btn-dark btn-sm w-100 mt-1">View Venue</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="{% url 'event_list' %}" class="btn btn-outline btn-lg">
+                View All Venues <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== SPECIAL OFFERS ===== -->
+<section class="section" id="offers">
+    <div class="container">
+        <div class="section-header">
+            <span class="subtitle">Exclusive Deals</span>
+            <h2>Special <span class="text-gold">Offers</span></h2>
+            <div class="section-divider"></div>
+            <p>Take advantage of our limited-time offers and make your stay even more memorable.</p>
+        </div>
+
+        <div class="grid-3">
+            {% for offer in special_offers %}
+            <div class="offer-card">
+                <div class="offer-card-bg">
+                    <img src="{{ offer.image }}" alt="{{ offer.title }}" loading="lazy">
+                </div>
+                <div class="offer-card-content">
+                    <span class="offer-discount">{{ offer.discount_percentage }}% OFF</span>
+                    <h3>{{ offer.title }}</h3>
+                    <p>{{ offer.description|truncatewords:15 }}</p>
+                    {% if offer.code %}
+                    <p style="margin-top:var(--space-sm);"><span
+                            style="background:rgba(201,168,76,0.2);padding:4px 12px;border-radius:4px;font-weight:600;color:var(--primary);">Code:
+                            {{ offer.code }}</span></p>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="offer-card">
+                <div class="offer-card-bg">
+                    <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80"
+                        alt="Summer Special" loading="lazy">
+                </div>
+                <div class="offer-card-content">
+                    <span class="offer-discount">30% OFF</span>
+                    <h3>Summer Getaway Package</h3>
+                    <p>3 nights stay with complimentary breakfast and spa treatment</p>
+                    <p style="margin-top:var(--space-sm);"><span
+                            style="background:rgba(201,168,76,0.2);padding:4px 12px;border-radius:4px;font-weight:600;color:var(--primary);">Code:
+                            SUMMER30</span></p>
+                </div>
+            </div>
+            <div class="offer-card">
+                <div class="offer-card-bg">
+                    <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&q=80" alt="Honeymoon"
+                        loading="lazy">
+                </div>
+                <div class="offer-card-content">
+                    <span class="offer-discount">25% OFF</span>
+                    <h3>Honeymoon Paradise</h3>
+                    <p>Suite upgrade, champagne dinner, and couple's spa included</p>
+                    <p style="margin-top:var(--space-sm);"><span
+                            style="background:rgba(201,168,76,0.2);padding:4px 12px;border-radius:4px;font-weight:600;color:var(--primary);">Code:
+                            LOVE25</span></p>
+                </div>
+            </div>
+            <div class="offer-card">
+                <div class="offer-card-bg">
+                    <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800&q=80" alt="Weekend"
+                        loading="lazy">
+                </div>
+                <div class="offer-card-content">
+                    <span class="offer-discount">15% OFF</span>
+                    <h3>Weekend Escape</h3>
+                    <p>Enjoy a luxurious weekend with dining credits and pool access</p>
+                    <p style="margin-top:var(--space-sm);"><span
+                            style="background:rgba(201,168,76,0.2);padding:4px 12px;border-radius:4px;font-weight:600;color:var(--primary);">Code:
+                            WEEKEND15</span></p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ===== HOTEL NEWS & BLOG ===== -->
+<section class="section" id="blog">
+    <div class="container">
+        <div class="section-header">
+            <span class="subtitle">LuxeStay Stories</span>
+            <h2>Hotel <span class="text-gold">News & Blog</span></h2>
+            <div class="section-divider"></div>
+            <p>Stay updated with our latest events, travel tips, and exclusive stories from our luxury resort.</p>
+        </div>
+
+        <div class="grid-3">
+            {% for post in latest_posts %}
+            <div class="card blog-card">
+                <div class="card-img">
+                    <img src="{{ post.image|default:'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800' }}"
+                        alt="{{ post.title }}" loading="lazy">
+                    <span class="card-badge">{{ post.category.name }}</span>
+                </div>
+                <div class="card-body">
+                    <div class="blog-meta mb-1">
+                        <span><i class="far fa-calendar-alt"></i> {{ post.created_at|date:"M d, Y" }}</span>
+                        <span><i class="far fa-user"></i> By {{ post.author.get_full_name|default:post.author.username
+                            }}</span>
+                    </div>
+                    <h3>{{ post.title }}</h3>
+                    <p>{{ post.summary|default:post.content|truncatewords:15 }}</p>
+                    <a href="{% url 'blog_detail' post.slug %}" class="btn-text">Read More <i
+                            class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Default blog cards if no data -->
+            <div class="card blog-card">
+                <div class="card-img">
+                    <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80" alt="LuxeStay News"
+                        loading="lazy">
+                    <span class="card-badge">Travel</span>
+                </div>
+                <div class="card-body">
+                    <div class="blog-meta mb-1">
+                        <span><i class="far fa-calendar-alt"></i> Oct 15, 2024</span>
+                    </div>
+                    <h3>Top 10 Hidden Gems Near LuxeStay</h3>
+                    <p>Discover the most beautiful secret spots around our resort that every traveler must visit.</p>
+                    <a href="{% url 'blog_list' %}" class="btn-text">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="card blog-card">
+                <div class="card-img">
+                    <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&q=80" alt="Chef Interview"
+                        loading="lazy">
+                    <span class="card-badge">Culinary</span>
+                </div>
+                <div class="card-body">
+                    <div class="blog-meta mb-1">
+                        <span><i class="far fa-calendar-alt"></i> Oct 10, 2024</span>
+                    </div>
+                    <h3>Inside Our Kitchen: Interview with Chef Marcus</h3>
+                    <p>Learn about the inspiration behind our signature dishes and the secret ingredients we use.</p>
+                    <a href="{% url 'blog_list' %}" class="btn-text">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="card blog-card">
+                <div class="card-img">
+                    <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800&q=80"
+                        alt="Wellness Tips" loading="lazy">
+                    <span class="card-badge">Wellness</span>
+                </div>
+                <div class="card-body">
+                    <div class="blog-meta mb-1">
+                        <span><i class="far fa-calendar-alt"></i> Oct 05, 2024</span>
+                    </div>
+                    <h3>5 Ways to Relax and Recharge at LuxeStay</h3>
+                    <p>Our wellness experts share their top tips for getting the most out of your spa visit.</p>
+                    <a href="{% url 'blog_list' %}" class="btn-text">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="{% url 'blog_list' %}" class="btn btn-outline btn-lg">
+                View All Stories <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="section section-cream" id="testimonials">
+    <div class="container">
+        <div class="section-header">
+            <span class="subtitle">Guest Reviews</span>
+            <h2>What Our <span class="text-gold">Guests</span> Say</h2>
+            <div class="section-divider"></div>
+        </div>
+
+        <div class="grid-3">
+            {% for testimonial in testimonials %}
+            <div class="testimonial-card">
+                <i class="fas fa-quote-right quote-icon"></i>
+                <div class="testimonial-stars">
+                    {% for i in "12345" %}
+                    {% if forloop.counter <= testimonial.rating %} <i class="fas fa-star"></i>
+                        {% else %}
+                        <i class="far fa-star"></i>
+                        {% endif %}
+                        {% endfor %}
+                </div>
+                <p class="testimonial-content">{{ testimonial.content }}</p>
+                <div class="testimonial-author">
+                    <img src="{{ testimonial.avatar|default:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100' }}"
+                        alt="{{ testimonial.name }}">
+                    <div>
+                        <span class="name">{{ testimonial.name }}</span>
+                        <span class="role">{{ testimonial.designation }}</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="testimonial-card">
+                <i class="fas fa-quote-right quote-icon"></i>
+                <div class="testimonial-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                        class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-content">"An absolutely magnificent experience! The rooms are breathtaking, the
+                    staff is incredibly attentive, and the food is out of this world. LuxeStay has set a new standard
+                    for luxury."</p>
+                <div class="testimonial-author">
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80"
+                        alt="Rajesh Kumar">
+                    <div>
+                        <span class="name">Rajesh Kumar</span>
+                        <span class="role">Business Executive</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <i class="fas fa-quote-right quote-icon"></i>
+                <div class="testimonial-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                        class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-content">"Our honeymoon at LuxeStay was pure magic. The suite was romantic, the
+                    restaurant dinner was phenomenal, and every detail was perfect. We'll never forget this experience!"
+                </p>
+                <div class="testimonial-author">
+                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80"
+                        alt="Priya Sharma">
+                    <div>
+                        <span class="name">Priya Sharma</span>
+                        <span class="role">Travel Blogger</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <i class="fas fa-quote-right quote-icon"></i>
+                <div class="testimonial-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                        class="fas fa-star"></i><i class="far fa-star"></i>
+                </div>
+                <p class="testimonial-content">"The attention to detail at LuxeStay is remarkable. From the welcome
+                    drink to the personalized room setup, everything was curated to perfection. Highly recommended!"</p>
+                <div class="testimonial-author">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80"
+                        alt="Michael Chen">
+                    <div>
+                        <span class="name">Michael Chen</span>
+                        <span class="role">International Tourist</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ===== CTA SECTION ===== -->
+<section class="section section-dark" style="text-align:center;">
+    <div class="container">
+        <span class="subtitle">Ready for Luxury?</span>
+        <h2 style="color:var(--white);margin-bottom:var(--space-lg);">Book Your <span class="text-gold">Dream
+                Stay</span> Today</h2>
+        <p style="color:rgba(255,255,255,0.7);max-width:600px;margin:0 auto var(--space-2xl);font-size:1.1rem;">
+            Experience unmatched luxury and hospitality. Reserve your room now and get exclusive member benefits with
+            every booking.
+        </p>
+        <div style="display:flex;gap:var(--space-md);justify-content:center;flex-wrap:wrap;">
+            <a href="{% url 'room_list' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-crown"></i> Book Now
+            </a>
+            <a href="{% url 'contact' %}" class="btn btn-outline-white btn-lg">
+                <i class="fas fa-phone"></i> Contact Us
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

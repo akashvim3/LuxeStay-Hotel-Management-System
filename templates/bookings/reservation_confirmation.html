@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Reservation Confirmed - LuxeStay{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Reservation <span class="text-gold">Confirmed</span></h1>
+        <div class="section-divider"></div>
+    </div>
+</div>
+<section class="section">
+    <div class="container container-sm">
+        <div class="form-card text-center">
+            <div
+                style="width:80px;height:80px;border-radius:50%;background:rgba(76,175,80,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-xl);">
+                <i class="fas fa-check" style="font-size:2rem;color:var(--success);"></i>
+            </div>
+            <h2>Table Reserved!</h2>
+            <p style="color:var(--medium-gray);margin-bottom:var(--space-2xl);">Your table has been reserved
+                successfully.</p>
+            <div
+                style="background:var(--cream);border-radius:var(--radius-md);padding:var(--space-xl);text-align:left;margin-bottom:var(--space-xl);">
+                <h4 style="margin-bottom:var(--space-md);">Reservation Details</h4>
+                <p><strong>Reservation ID:</strong> {{ reservation.reservation_id }}</p>
+                <p><strong>Date:</strong> {{ reservation.date }}</p>
+                <p><strong>Time:</strong> {{ reservation.time }}</p>
+                <p><strong>Guests:</strong> {{ reservation.guests }}</p>
+                {% if reservation.occasion %}<p><strong>Occasion:</strong> {{ reservation.occasion }}</p>{% endif %}
+            </div>
+            <a href="{% url 'home' %}" class="btn btn-primary">Back to Home</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

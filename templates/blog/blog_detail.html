@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }} - LuxeStay Blog{% endblock %}
+{% block content %}
+<div class="detail-hero">
+    <img src="{{ post.get_image_url }}" alt="{{ post.title }}">
+</div>
+<div class="detail-content">
+    <div class="detail-card">
+        <span class="card-category">{{ post.category.name }}</span>
+        <h1 style="font-size:2rem;margin-bottom:var(--space-md);">{{ post.title }}</h1>
+        <div class="card-meta mb-2">
+            <span><i class="fas fa-user"></i> {{ post.author.get_full_name|default:post.author.username }}</span>
+            <span><i class="fas fa-calendar"></i> {{ post.created_at|date:"F d, Y" }}</span>
+            <span><i class="fas fa-eye"></i> {{ post.views_count }} views</span>
+        </div>
+        <div style="line-height:1.9;color:var(--dark-gray);">
+            {{ post.content|linebreaks }}
+        </div>
+        <div class="mt-2">
+            <a href="{% url 'blog_list' %}" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+        </div>
+    </div>
+</div>
+{% if related_posts %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="subtitle">Related</span>
+            <h2>More <span class="text-gold">Articles</span></h2>
+            <div class="section-divider"></div>
+        </div>
+        <div class="grid-3">
+            {% for p in related_posts %}
+            <div class="card">
+                <div class="card-img"><img src="{{ p.get_image_url }}" alt="{{ p.title }}" loading="lazy"></div>
+                <div class="card-body">
+                    <span class="card-category">{{ p.category.name }}</span>
+                    <h3>{{ p.title }}</h3>
+                    <a href="{% url 'blog_detail' p.slug %}" class="btn btn-dark btn-sm w-100 mt-1">Read More</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

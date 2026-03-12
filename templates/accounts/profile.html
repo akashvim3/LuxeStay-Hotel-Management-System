@@ -1,0 +1,42 @@
+﻿{% extends 'base.html' %}
+{% block title %}Profile - LuxeStay{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>My <span class="text-gold">Profile</span></h1>
+        <div class="section-divider"></div>
+    </div>
+</div>
+<section class="section">
+    <div class="container" style="max-width:800px;">
+        <div class="form-card">
+            <div class="d-flex align-center gap-2 mb-3">
+                <div
+                    style="width:80px;height:80px;border-radius:50%;background:var(--primary-gradient);display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--secondary-dark);font-weight:700;">
+                    {{ user.first_name|first|default:user.username|first }}
+                </div>
+                <div>
+                    <h3>{{ user.get_full_name|default:user.username }}</h3>
+                    <p style="color:var(--medium-gray);">{{ user.email }} · {{ user.get_role_display }}</p>
+                    <p style="color:var(--primary);font-weight:600;"><i class="fas fa-coins"></i> {{ user.loyalty_points
+                        }} Loyalty Points</p>
+                </div>
+            </div>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="grid-2" style="gap:var(--space-md);">
+                    {% for field in form %}
+                    <div class="form-group" {% if field.name == "address" %}style="grid-column:span 2;"{% endif %}>
+                        <label>{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg mt-1">
+                    <i class="fas fa-save"></i> Update Profile
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

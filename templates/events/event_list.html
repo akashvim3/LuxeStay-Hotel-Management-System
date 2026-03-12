@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Events & Venues - LuxeStay{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container text-center">
+        <span class="subtitle">Grand Celebrations</span>
+        <h1>Exquisite <span class="text-gold">Event Spaces</span></h1>
+        <div class="section-divider divider-center"></div>
+        <p class="max-600 mx-auto">From grand weddings and gala dinners to corporate conferences and social mixers, we
+            provide the perfect backdrop for your most precious moments.</p>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        <div class="grid-3">
+            {% for space in spaces %}
+            <div class="card event-card hover-lift">
+                <div class="card-img">
+                    <img src="{{ space.image|default:'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800' }}"
+                        alt="{{ space.name }}" loading="lazy">
+                    <span class="card-badge">Featured Venue</span>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-between align-center mb-1">
+                        <span class="card-category">Luxury Space</span>
+                        <span class="text-gold"><i class="fas fa-star"></i> 4.9</span>
+                    </div>
+                    <h3>{{ space.name }}</h3>
+                    <p>{{ space.description|truncatewords:20 }}</p>
+                    <div class="card-meta">
+                        <span><i class="fas fa-users"></i> Up to {{ space.capacity }} Guests</span>
+                        <span><i class="fas fa-expand-arrows-alt"></i> Large Area</span>
+                        <span><i class="fas fa-clock"></i> Flexible Hours</span>
+                    </div>
+                    <div class="card-price mb-2">
+                        <span class="current">₹{{ space.price_per_hour|floatformat:0 }}</span>
+                        <span class="per-night">/ hour</span>
+                    </div>
+                    <div class="d-flex gap-1">
+                        <a href="{% url 'book_event' space.slug %}" class="btn btn-primary btn-sm flex-1">Book Now</a>
+                        <a href="{% url 'contact' %}" class="btn btn-dark btn-sm flex-1">Enquire</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Default cards when no data -->
+            <div class="card event-card">
+                <div class="card-img">
+                    <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80"
+                        alt="Grand Ballroom" loading="lazy">
+                    <span class="card-badge">Wedding</span>
+                </div>
+                <div class="card-body">
+                    <h3>The Royal Grand Ballroom</h3>
+                    <p>A magnificent space with crystal chandeliers and regal decor for grand weddings.</p>
+                    <div class="card-meta">
+                        <span><i class="fas fa-users"></i> 500+ Guests</span>
+                        <span><i class="fas fa-tag"></i> Premium Venue</span>
+                    </div>
+                    <a href="{% url 'contact' %}" class="btn btn-dark btn-sm w-100 mt-1">Check Availability</a>
+                </div>
+            </div>
+            <div class="card event-card">
+                <div class="card-img">
+                    <img src="https://images.unsplash.com/photo-1431540015161-0bf868a2d407?w=800&q=80"
+                        alt="Conference Room" loading="lazy">
+                    <span class="card-badge">Corporate</span>
+                </div>
+                <div class="card-body">
+                    <h3>Elite Business Centre</h3>
+                    <p>State-of-the-art conference facilities with modern tech for corporate retreats.</p>
+                    <div class="card-meta">
+                        <span><i class="fas fa-users"></i> 100+ Guests</span>
+                        <span><i class="fas fa-tag"></i> Professional</span>
+                    </div>
+                    <a href="{% url 'contact' %}" class="btn btn-dark btn-sm w-100 mt-1">Check Availability</a>
+                </div>
+            </div>
+            <div class="card event-card">
+                <div class="card-img">
+                    <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&q=80"
+                        alt="Rooftop Terrace" loading="lazy">
+                    <span class="card-badge">Party</span>
+                </div>
+                <div class="card-body">
+                    <h3>Skyline Rooftop Lounge</h3>
+                    <p>Breathtaking city views and vibrant atmosphere for unforgettable parties.</p>
+                    <div class="card-meta">
+                        <span><i class="fas fa-users"></i> 150+ Guests</span>
+                        <span><i class="fas fa-tag"></i> Trending</span>
+                    </div>
+                    <a href="{% url 'contact' %}" class="btn btn-dark btn-sm w-100 mt-1">Check Availability</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Our Venues -->
+<section class="section section-dark">
+    <div class="container">
+        <div class="grid-2 align-center">
+            <div>
+                <span class="subtitle">Our Expertise</span>
+                <h2 class="text-white">Why Host Your <span class="text-gold">Event</span> With Us?</h2>
+                <div class="section-divider"></div>
+                <p class="text-grey mb-3">With years of experience in high-end hospitality, we ensure every detail of
+                    your event is handled with precision and elegance.</p>
+                <div class="d-flex flex-column gap-1">
+                    <div class="d-flex align-center gap-1">
+                        <i class="fas fa-check-circle text-gold"></i>
+                        <span class="text-white">Professional Event Planning Support</span>
+                    </div>
+                    <div class="d-flex align-center gap-1">
+                        <i class="fas fa-check-circle text-gold"></i>
+                        <span class="text-white">Premium Catering & Menu Customization</span>
+                    </div>
+                    <div class="d-flex align-center gap-1">
+                        <i class="fas fa-check-circle text-gold"></i>
+                        <span class="text-white">World-Class Audio-Visual Technology</span>
+                    </div>
+                    <div class="d-flex align-center gap-1">
+                        <i class="fas fa-check-circle text-gold"></i>
+                        <span class="text-white">Luxury Guest Accommodation Packages</span>
+                    </div>
+                </div>
+            </div>
+            <div class="p-2">
+                <img src="https://images.unsplash.com/photo-1464366420600-d06852bb98aa?w=800&q=80" alt="Event Planning"
+                    class="img-responsive rounded-lg shadow-xl">
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

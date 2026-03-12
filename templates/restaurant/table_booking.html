@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Table Booking - LuxeStay{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Table <span class="text-gold">Booking</span></h1>
+        <div class="section-divider"></div>
+    </div>
+</div>
+<section class="section">
+    <div class="container container-sm">
+        <div class="form-card text-center">
+            <i class="fas fa-utensils" style="font-size:3rem;color:var(--primary);margin-bottom:var(--space-md);"></i>
+            <h2>Reserve Your Table</h2>
+            <p style="color:var(--medium-gray);margin-bottom:var(--space-xl);">Please <a href="{% url 'login' %}"
+                    style="color:var(--primary);font-weight:600;">sign in</a> to make a reservation.</p>
+            <a href="{% url 'reserve_table' %}" class="btn btn-primary btn-lg"><i class="fas fa-calendar-check"></i>
+                Reserve Now</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
